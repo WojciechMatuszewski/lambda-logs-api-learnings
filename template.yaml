@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lambda-logs-api
+  Sample SAM Template for lambda-logs-api
+
+Globals:
+  Function:
+    Timeout: 5
+
+Resources:
+  LogsExtension:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: logs-extension
+      ContentUri: ./layer
+      CompatibleRuntimes:
+        - provided.al2
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: makefile
+  HelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./hello
+      Handler: boostrap
+      Runtime: provided.al2
+      Layers:
+        - !Ref LogsExtension
+    Metadata:
+      BuildMethod: makefile
